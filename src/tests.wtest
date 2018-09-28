@@ -1,6 +1,0 @@
-
-describe "este es un grupo de tests"{
-	test "aca poner desripcion del test" {
-		assert.that(false)
-	}
-}
