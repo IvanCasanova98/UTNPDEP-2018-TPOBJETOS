@@ -1,43 +1,40 @@
-import Ronaldo.*
+import Rolando.*
 describe "TestPunto3" {
 	
-	
-	
-	test "Saber si Rolando está cargado" {
+	fixture {
 		rolando.agregarArtefacto(armadura)
 		rolando.agregarArtefacto(espejo)
+	}
+	
+	test "Saber si Rolando está cargado" {
+		
 		assert.that(rolando.estaCargado())
 	}
 	test "Hacer que Rolando se saque la armadura. Saber si Rolando está cargado." {
-		rolando.agregarArtefacto(espejo)
+		rolando.removerArtefacto(armadura)
 		assert.notThat(rolando.estaCargado())
 	}
 	test "Saber cuánta habilidad para la lucha tiene Rolando." {
-		rolando.agregarArtefacto(armadura)
-		rolando.agregarArtefacto(espejo)
+		
  		assert.equals(20,rolando.habilidadLucha())
 	}
 	test "Saber cuál es la habilidad para la lucha de la armadura de Rolando si tiene una bendición de refuerzo" {
-		rolando.agregarArtefacto(armadura)
-		rolando.agregarArtefacto(espejo)
+		
 		armadura.cambiarRefuerzo(bendicion)
  		assert.equals(58,armadura.poder())
 	}
 	test "Saber cuál es la habilidad para la lucha de la armadura de Rolando si tiene una cota de malla de refuerzo" {
-		rolando.agregarArtefacto(armadura)
-		rolando.agregarArtefacto(espejo)
+		
 		armadura.cambiarRefuerzo(cotaDeMalla)
 		assert.equals(3,armadura.poder())
 	}
 	test "Saber cuál es la habilidad para la lucha de la armadura de Rolando si tiene el hechizo básico de refuerzo" {
-		rolando.agregarArtefacto(armadura)
-		rolando.agregarArtefacto(espejo)
+		
 		armadura.cambiarRefuerzo(hechizo)
 		assert.equals(12,armadura.poder())
 	}
 	test "Saber cuál es la habilidad para la lucha de la armadura de Rolando si tiene el hechizo espectro maléfico de refuerzo" {
-		rolando.agregarArtefacto(armadura)
-		rolando.agregarArtefacto(espejo)
+		
 		armadura.cambiarRefuerzo(hechizo)
 		hechizo.cambiarHechizo(espectroMalefico)
 		assert.equals(19,armadura.poder())
@@ -46,12 +43,11 @@ describe "TestPunto3" {
 		rolando.removerArtefacto(espadaDestino)
 		rolando.removerArtefacto(collarDivino)
 		rolando.removerArtefacto(mascaraOscura)
-		rolando.agregarArtefacto(espejo)
+		rolando.removerArtefacto(armadura)
  		assert.equals(1,rolando.habilidadLucha())
 	}
 	test "Reemplazar al hechizo preferido por un libro de hechizos que contenga el espectro maléfico (con nombre “espectro maléfico”) y al hechizo básico. Saber cuál es el nivel de hechicería de Rolando." {
-		rolando.agregarArtefacto(armadura)
-		rolando.agregarArtefacto(espejo)
+		
 		rolando.cambiarHechizoPreferido(libroDeHechizos)
 		assert.equals(56,rolando.nivelDeHechiceria())
 

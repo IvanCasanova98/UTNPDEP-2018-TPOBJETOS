@@ -1,4 +1,4 @@
-import Ronaldo.*
+import Rolando.*
 describe "Punto 2: Lucha" {
 
 	test "Eliminar todos los artefactos de Rolando. Conocer la habilidad para la lucha de Rolando." {

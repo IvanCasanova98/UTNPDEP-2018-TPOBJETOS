@@ -1,5 +1,5 @@
 object rolando {
-    var valorFuerzaOscura = fuerzaOscura.valorFuerzaOscura()
+	
     var hechizoPreferido = espectroMalefico
     var lstArtefactos = [espadaDestino,collarDivino,mascaraOscura]
     var valorBaseLucha = 1
@@ -19,7 +19,7 @@ object rolando {
         return (valorBaseLucha + sumaUnidadesAportadasPorArtefactos) 
     }
     method nivelDeHechiceria(){ //PUNTO 1.1
-          return (self.valorBase() * hechizoPreferido.poder()) + valorFuerzaOscura
+          return (self.valorBase() * hechizoPreferido.poder()) + fuerzaOscura.valorFuerzaOscura()
     }
     method cambiarHechizoPreferido(nuevoHechizoPreferido){ //PUNTO 1.3
         hechizoPreferido = nuevoHechizoPreferido
@@ -100,10 +100,9 @@ object fuerzaOscura{
 
 object armadura{
     var refuerzo = ninguno
+    const valorBase = 2
     method cambiarRefuerzo(nuevoRefuerzo){refuerzo = nuevoRefuerzo}
-    method valorBase(){return 2}
-    method valorRefuerzo(){return refuerzo.valorLucha()}
-    method poder(){return self.valorBase()+self.valorRefuerzo()}
+    method poder(){return valorBase + refuerzo.valorLucha()}
 }
 
 object cotaDeMalla{
@@ -134,8 +133,8 @@ object espejo{
         var listaPersonajePoderes = personaje.listaArtefactos()
         if (listaPersonajePoderes.isEmpty()){
             return 0
-        }
-        else{return listaPersonajePoderes.map({x => if (x==self){return 0} else{x.poder()}}).max()}
+        }  //rolando.artefactosSin(self)
+        else{return listaPersonajePoderes.filter({x => x!=self}).max({x=>x.poder()})}
     }
 }
 
@@ -146,7 +145,8 @@ object libroDeHechizos{
         if (listaDeHechizos.isEmpty()){
             return 0
         }
-        else{return listaDeHechizos.map({x => if (x.hechizoPoderoso()){return x.poder()} else{return 0}}).sum()}
+        //FALTA CORREGIR ESTO
+        else{return listaDeHechizos.map({x => if (x.hechizoPoderoso()){return} else{return 0}}).sum({x=> x.poder()})}
     }
 }
 
