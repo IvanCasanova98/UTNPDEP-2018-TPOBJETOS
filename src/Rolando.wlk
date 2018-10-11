@@ -1,4 +1,254 @@
-object rolando {
+class UserException inherits Exception { }
+
+class Personaje {
+	var monedas = 100
+	var property hechizoPreferido = espectroMalefico
+	/*
+	 * Ese lstArtefactos no lo puedo poner directo
+	 * porque hay que instanciar 
+	 * los objetos primero. Solo collarDivino queda como objeto
+	 */
+    // var lstArtefactos = [espadaDestino,collarDivino,mascaraOscura]
+    var lstArtefactos = [collarDivino]
+    var property valorBaseLucha = 1
+    const valorBase = 3
+
+	method comprar(artefacto){
+		if(artefacto.precio()>monedas){
+			throw new UserException("No tiene suficientes monedas")
+		}
+		self.agregarArtefacto(artefacto)
+	}
+    method agregarArtefacto (nuevoArtefacto) { //PUNTO 2.2
+        lstArtefactos.add(nuevoArtefacto)
+    }
+    method removerArtefacto(artefactoARemover){ //PUNTO 2.2
+        lstArtefactos.remove(artefactoARemover)
+    }
+    method habilidadLucha(){ //PUNTO 2.3
+        var sumaUnidadesAportadasPorArtefactos = lstArtefactos.sum({artefacto => artefacto.poder()})
+        return (valorBaseLucha + sumaUnidadesAportadasPorArtefactos) 
+    }
+    method nivelDeHechiceria(){ //PUNTO 1.1
+          return (valorBase * hechizoPreferido.poder()) + fuerzaOscura.valorFuerzaOscura()
+    }    method fuerzaOscura(){
+        return fuerzaOscura
+    }
+    method seCreePoderoso(){ //PUNTO 1.5
+        return hechizoPreferido.hechizoPoderoso()
+    }
+    method luchaMayorHechiceria(){ //PUNTO 2.4
+        return self.habilidadLucha()>self.nivelDeHechiceria()
+    }
+    method listaArtefactos(){return lstArtefactos}
+    method estaCargado(){return lstArtefactos.size()>=5}
+    
+     //este se reemplaza por el property de valorBaseLucha
+  
+   /* 
+    * method cambiarValorBaseLucha(nuevoValor){ //PUNTO 2.1
+    * valorBaseLucha = nuevoValor}
+    */
+        
+    // este se reemplaza llamandola const
+    
+   /*
+    * method valorBase(){return 3} */ 
+   
+    //este se reemplaza por el property de hechizoPreferido
+    
+   	/* method cambiarHechizoPreferido(nuevoHechizoPreferido){ //PUNTO 1.3
+   	 * hechizoPreferido = nuevoHechizoPreferido}
+   	 */
+  
+}
+
+class Armadura{
+	
+	var property refuerzo = ninguno
+	var valorBase
+	//method cambiarRefuerzo(nuevoRefuerzo){refuerzo = nuevoRefuerzo}
+	method poder(){return valorBase + refuerzo.valorLucha()}
+	method precio(){
+		if ((refuerzo == cotaDeMalla) or (refuerzo == ninguno)) {
+			return refuerzo.precio()
+		} else {return valorBase + refuerzo.precio()}
+		
+	}
+}
+
+class Arma{
+	const property precio = 5* self.poder()
+	method poder(){return 3}
+}
+
+class Mascara{
+	var indiceOscuridad
+	method establecerIndiceOscuridad(nuevoIndice){
+		if ((nuevoIndice < 0) or (nuevoIndice > 1)){throw new UserException("Se excedió del indice")} 
+		indiceOscuridad = nuevoIndice
+			
+	}
+	method poder(){
+		return 4.min((fuerzaOscura.valorFuerzaOscura()/2)*indiceOscuridad)
+       /*
+        * if ((fuerzaOscura.valorFuerzaOscura()/2)>=4){
+        * return (fuerzaOscura.valorFuerzaOscura()/2)
+        * }
+        * else {return 4}
+        */ 
+               
+    }
+}
+
+class Logos{
+	const property precio = self.poder()
+	var property nombre
+	var property valorASerMultiplicado
+	method poder(){
+    return nombre.length() * valorASerMultiplicado
+    }
+    method hechizoPoderoso(){
+        return (self.poder() > 15)
+    }
+}
+
+//YA HAY CLASE MASCARA, Fijarse que onda esta
+	object mascaraOscura{
+    method poder(){
+        if ((fuerzaOscura.valorFuerzaOscura()/2)>=4){
+            return (fuerzaOscura.valorFuerzaOscura()/2)
+        }
+        else {return 4}
+    }
+}
+
+
+object collarDivino{
+    var property cantPerlas = 5
+	const property precio = 2*cantPerlas
+    /*
+     * method setearCantPerlas (nuevaCantPerlas) {
+     * cantPerlas = nuevaCantPerlas
+     * }
+     */
+    
+    method poder(){return cantPerlas}
+}
+
+
+
+object espectroMalefico{
+    var nombre = "espectro Malefico"
+    //NO ESPECIFICA PRECIO DE ESTE HECHIZO, PONEMOS 0
+	const property precio = 0
+    method cambiarNombre(nuevoNombre){ //PUNTO 2.1
+        nombre = nuevoNombre
+    }
+    method poder(){
+    return nombre.length()
+    }
+    method hechizoPoderoso(){
+        return (self.poder() > 15)
+    }
+}
+
+
+object hechizoBasico{
+	
+	const property precio = 10
+    method poder(){
+        return 10
+    }
+    method hechizoPoderoso(){
+        return false
+    }
+}
+
+object fuerzaOscura{
+    var property valorFuerza = 5
+    method valorFuerzaOscura(){
+        return valorFuerza
+    }
+    
+    method eclipse(){ //PUNTO 1.4
+        valorFuerza = valorFuerza *2
+    }
+    
+     /* 
+     * method cambiarValorFuerza(nuevoValor){
+     * valorFuerza = nuevoValor}
+     */
+}
+
+object cotaDeMalla{
+   const property precio = valorLucha/2
+   var property valorLucha
+}
+
+object bendicion {
+    /* var nombre = rolando 
+     * method cambiarNombre(nuevo){nombre = nuevo}
+     */ 
+    const property precio = 0
+    method valorLucha(personaje){return personaje.nivelDeHechiceria()}
+   
+}
+
+object ninguno{
+	const property precio = 2
+    method valorLucha(){return 0}
+}
+
+object espejo{
+   /* 
+    * var personaje = rolando
+    *  method cambiarPersonaje(nuevoPersonaje){ personaje = nuevoPersonaje}
+    */
+	const property precio = 90
+    method poder(personaje){
+        var listaPersonajePoderes = personaje.listaArtefactos()
+        if (listaPersonajePoderes.isEmpty()){
+            return 0
+        }  //rolando.artefactosSin(self)
+        else{return listaPersonajePoderes.filter({x => x!=self}).max({x=>x.poder()})}
+    }
+}
+
+object libroDeHechizos{
+	
+	const property precio = 10* listaDeHechizos.size()+ unidadDeHechiceriaTotalPoderosos
+	const property unidadDeHechiceriaTotalPoderosos = listaDeHechizos.filter({hechizos => hechizos.hechizoPoderoso()}).sum({hechizos => hechizos.poder()}) 
+    var listaDeHechizos = [espectroMalefico, hechizoBasico]
+
+    method poder(){
+        if (listaDeHechizos.isEmpty()){
+            return 0
+        }
+        else{return listaDeHechizos.map({x => if (x.hechizoPoderoso()){return x.poder()} else{return 0}}).sum({x=> x.poder()})}
+    }
+}
+
+/*
+ * object armadura{
+ * var refuerzo = ninguno
+ * const valorBase = 2
+ * method cambiarRefuerzo(nuevoRefuerzo){refuerzo = nuevoRefuerzo}
+ * method poder(){return valorBase + refuerzo.valorLucha()}
+ * }
+ */
+
+ 
+/* 
+ * object hechizo{
+ * var hechizo=hechizoBasico
+ * method cambiarHechizo(nuevoHechizo){hechizo = nuevoHechizo}
+ * method valorLucha(){return hechizo.poder()}
+ * }
+ * */
+ 
+
+/* object rolando {
 	
     var hechizoPreferido = espectroMalefico
     var lstArtefactos = [espadaDestino,collarDivino,mascaraOscura]
@@ -38,115 +288,12 @@ object rolando {
     }
     method listaArtefactos(){return lstArtefactos}
     method estaCargado(){return lstArtefactos.size()>=5}
-}
-object espadaDestino{
-    method poder(){return 3}
-}
+} */
 
-object collarDivino{
-    var cantPerlas = 5
+//ESTE OBJETO SE DEBE INSTANCIAR DE LA CLASE ARMA
 
-    method setearCantPerlas (nuevaCantPerlas) {
-        cantPerlas = nuevaCantPerlas
-    }
-    method poder(){return cantPerlas}
-}
-
-object mascaraOscura{
-    method poder(){
-        if ((fuerzaOscura.valorFuerzaOscura()/2)>=4){
-            return (fuerzaOscura.valorFuerzaOscura()/2)
-        }
-        else {return 4}
-    }
-}
-
-object espectroMalefico{
-    var nombre = "espectro Malefico"
-
-    method cambiarNombre(nuevoNombre){ //PUNTO 2.1
-        nombre = nuevoNombre
-    }
-    method poder(){
-    return nombre.length()
-    }
-    method hechizoPoderoso(){
-        return (self.poder() > 15)
-    }
-}
-
-object hechizoBasico{
-
-    method poder(){
-        return 10
-    }
-    method hechizoPoderoso(){
-        return false
-    }
-}
-
-object fuerzaOscura{
-    var valorFuerza = 5
-    method valorFuerzaOscura(){
-        return valorFuerza
-    }
-    method cambiarValorFuerza(nuevoValor){
-        valorFuerza = nuevoValor
-    }
-    method eclipse(){ //PUNTO 1.4
-        valorFuerza = valorFuerza *2
-    }
-}
-
-object armadura{
-    var refuerzo = ninguno
-    const valorBase = 2
-    method cambiarRefuerzo(nuevoRefuerzo){refuerzo = nuevoRefuerzo}
-    method poder(){return valorBase + refuerzo.valorLucha()}
-}
-
-object cotaDeMalla{
-    method valorLucha(){return 1}
-}
-
-object bendicion {
-    var nombre = rolando
-    method valorLucha(){return nombre.nivelDeHechiceria()}
-    method cambiarNombre(nuevo){nombre = nuevo}
-}
-
-object hechizo{
-    var hechizo=hechizoBasico
-    method cambiarHechizo(nuevoHechizo){hechizo = nuevoHechizo}
-    method valorLucha(){return hechizo.poder()}
-}
-object ninguno{
-    method valorLucha(){return 0}
-}
-
-object espejo{
-    var personaje = rolando
-    method cambiarPersonaje(nuevoPersonaje){
-        personaje = nuevoPersonaje
-    }
-    method poder(){
-        var listaPersonajePoderes = personaje.listaArtefactos()
-        if (listaPersonajePoderes.isEmpty()){
-            return 0
-        }  //rolando.artefactosSin(self)
-        else{return listaPersonajePoderes.filter({x => x!=self}).max({x=>x.poder()})}
-    }
-}
-
-object libroDeHechizos{
-    var listaDeHechizos = [espectroMalefico, hechizoBasico]
-
-    method poder(){
-        if (listaDeHechizos.isEmpty()){
-            return 0
-        }
-        //FALTA CORREGIR ESTO
-        else{return listaDeHechizos.map({x => if (x.hechizoPoderoso()){return} else{return 0}}).sum({x=> x.poder()})}
-    }
-}
-
+/*
+ * object espadaDestino{
+ * method poder(){return 3}  }
+ * 
+ */
