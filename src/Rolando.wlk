@@ -2,7 +2,7 @@ class UserException inherits Exception { }
 
 class Personaje {
 	var monedas = 100
-	var property hechizoPreferido = espectroMalefico
+	var property hechizoPreferido
 	/*
 	 * Ese lstArtefactos no lo puedo poner directo
 	 * porque hay que instanciar 
@@ -136,24 +136,6 @@ object collarDivino{
     method poder(){return cantPerlas}
 }
 
-
-
-object espectroMalefico{
-    var nombre = "espectro Malefico"
-    //NO ESPECIFICA PRECIO DE ESTE HECHIZO, PONEMOS 0
-	const property precio = 0
-    method cambiarNombre(nuevoNombre){ //PUNTO 2.1
-        nombre = nuevoNombre
-    }
-    method poder(){
-    return nombre.length()
-    }
-    method hechizoPoderoso(){
-        return (self.poder() > 15)
-    }
-}
-
-
 object hechizoBasico{
 	
 	const property precio = 10
@@ -219,6 +201,7 @@ object libroDeHechizos{
 	
 	const property precio = 10* listaDeHechizos.size()+ unidadDeHechiceriaTotalPoderosos
 	const property unidadDeHechiceriaTotalPoderosos = listaDeHechizos.filter({hechizos => hechizos.hechizoPoderoso()}).sum({hechizos => hechizos.poder()}) 
+    const espectroMalefico = new Logos(nombre = "espectro malefico", valorASerMultiplicado = 1)
     var listaDeHechizos = [espectroMalefico, hechizoBasico]
 
     method poder(){
@@ -297,3 +280,18 @@ object libroDeHechizos{
  * method poder(){return 3}  }
  * 
  */
+ 
+ /* object espectroMalefico{
+    var nombre = "espectro Malefico"
+    //NO ESPECIFICA PRECIO DE ESTE HECHIZO, PONEMOS 0
+	const property precio = 0
+    method cambiarNombre(nuevoNombre){ //PUNTO 2.1
+        nombre = nuevoNombre
+    }
+    method poder(){
+    return nombre.length()
+    }
+    method hechizoPoderoso(){
+        return (self.poder() > 15)
+    }
+} */
