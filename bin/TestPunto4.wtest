@@ -1,0 +1,57 @@
+import Rolando.*
+
+describe "Punto 4: Comercio"{
+const espada = new Arma()
+const mascaraOscura = new Mascara(indiceOscuridad=1)
+const armadura= new Armadura(valorBase=1)
+const armaduraExtra= new Armadura(valorBase=5)
+const cotaDeMalla = new CotasDeMalla(valorLucha=5)
+const alacachulacachicomula =new Logos(nombre="alacachula cachicomula",valorASerMultiplicado=1)
+const thor = new Personaje(hechizoPreferido= hechizoBasico)
+const loki = new Personaje(hechizoPreferido= hechizoBasico)
+const xenia = new Personaje(hechizoPreferido= alacachulacachicomula)
+fixture{
+	loki.monedas(5)
+	armaduraExtra.refuerzo(cotaDeMalla)
+}
+test "Conocer el precio de lista de un hechizo de logo cuyo nombre es “alacachula cachicomula." {
+	assert.equals(22,alacachulacachicomula.poder())
+	}
+test "Xenia canjea el hechizo por un hechizo básico. Saber cuántas monedas le quedan." {
+	xenia.canjearHechizo(hechizoBasico)
+	assert.equals(100,xenia.monedas())
+	}
+test "Thor canjea el hechizo por el hechizo de logos “alacachula cachicomula” del juego de datos. Cuántas monedas le quedan a Thor" {
+	thor.canjearHechizo(alacachulacachicomula)
+	assert.equals(83,thor.monedas())
+	}
+test "Hacer canjear dos veces a Thor el mismo hechizo básico."{
+	thor.canjearHechizo(hechizoBasico)
+	thor.canjearHechizo(hechizoBasico)
+	assert.equals(90,thor.monedas())
+	
+}
+test "Loki comienza con 5 monedas. Quiere canjear el hechizo por el de “alacachula cachicomula” del juego de datos."{
+	assert.throwsExceptionLike (new UserException("Monedas insuficientes para canjear ese hechizo"),
+		{loki.canjearHechizo(alacachulacachicomula)})
+}
+test "Xenia compra una espada, un collar divino (de 5 perlas), una armadura sin refuerzo y otra armadura con malla de cota cuyo valor de lucha es 5. Cuántas monedas le quedan a Xenia." {
+	xenia.comprarArtefacto(espada)
+	xenia.comprarArtefacto(collarDivino)
+	xenia.comprarArtefacto(armadura)
+	xenia.comprarArtefacto(armaduraExtra)
+	assert.equals(70.5,xenia.monedas())
+	
+}
+
+test "" {
+	xenia.comprarArtefacto(espada)
+	xenia.comprarArtefacto(collarDivino)
+	xenia.comprarArtefacto(armadura)
+	xenia.comprarArtefacto(armaduraExtra)
+	assert.equals(4,xenia.lstArtefactos.size())
+	
+}
+
+
+}
