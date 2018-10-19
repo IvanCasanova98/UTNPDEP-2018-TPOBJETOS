@@ -24,12 +24,12 @@ fixture{
 		assert.equals(11,rolando.habilidadLucha())
 	}
 	test "Cambiar el valor base para la lucha de Rolando a 8. Conocer la habilidad para la lucha de Rolando con todos los artefactos." {
-		rolando.cambiarValorBaseLucha(8)
+		rolando.valorBaseLucha(8)
 		assert.equals(20,rolando.habilidadLucha())
 	}
 	test "Hacer que ocurra un eclipse. Preguntar por el valor de lucha de la máscara oscura." {
 		fuerzaOscura.eclipse()
-		assert.equals(5,mascaraOscura.poder())
+		assert.equals(5,mascaraOscura.puntosLucha(rolando))
 	}
 	test "Eliminar la máscara oscura de los artefactos de Rolando. Conocer la habilidad para la lucha de Rolando." {
 		rolando.removerArtefacto(mascaraOscura)

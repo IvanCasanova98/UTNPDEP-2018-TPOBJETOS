@@ -4,16 +4,17 @@ const espectroMalefico =new Logos(nombre="espectro Malefico",valorASerMultiplica
 const rolando = new Personaje(hechizoPreferido= espectroMalefico)
 const espadaDestino = new Arma()
 const mascaraOscura = new Mascara(indiceOscuridad=1)
-const armadura= new Armadura(valorBase=1)
+const armadura= new Armadura(valorBase=2)
 const armaduraExtra= new Armadura(valorBase=5)
-const cotaDeMalla = new CotasDeMalla(valorLucha=6)
+const cotaDeMalla = new CotasDeMalla(puntosLucha=1)
+const cotaDeMallaExtra =  new CotasDeMalla(puntosLucha=6)
 fixture{
+	rolando.agregarArtefacto(collarDivino)
 	rolando.agregarArtefacto(espadaDestino)
 	rolando.agregarArtefacto(mascaraOscura)
 	rolando.agregarArtefacto(armadura)
 	rolando.agregarArtefacto(espejo)
-	rolando.agregarArtefacto(collarDivino)
-	armaduraExtra.refuerzo(cotaDeMalla)
+	armaduraExtra.refuerzo(cotaDeMallaExtra)
 	}
 	
 	test "Saber si Rolando está cargado" {
@@ -30,23 +31,23 @@ fixture{
 	}
 	test "Saber cuál es la habilidad para la lucha de la armadura de Rolando si tiene una bendición de refuerzo" {
 		
-		armadura.cambiarRefuerzo(bendicion)
- 		assert.equals(58,armadura.poder())
+		armadura.refuerzo(bendicion)
+ 		assert.equals(58,armadura.puntosLucha(rolando))
 	}
 	test "Saber cuál es la habilidad para la lucha de la armadura de Rolando si tiene una cota de malla de refuerzo" {
 		
-		armadura.cambiarRefuerzo(cotaDeMalla)
-		assert.equals(3,armadura.poder())
+		armadura.refuerzo(cotaDeMalla)
+		assert.equals(3,armadura.puntosLucha(rolando))
 	}
 	test "Saber cuál es la habilidad para la lucha de la armadura de Rolando si tiene el hechizo básico de refuerzo" {
 		
-		armadura.cambiarRefuerzo(hechizoBasico)
-		assert.equals(12,armadura.poder())
+		armadura.refuerzo(hechizoBasico)
+		assert.equals(12,armadura.puntosLucha(rolando))
 	}
 	test "Saber cuál es la habilidad para la lucha de la armadura de Rolando si tiene el hechizo espectro maléfico de refuerzo" {
 		
-		armadura.cambiarRefuerzo(espectroMalefico)
-		assert.equals(19,armadura.poder())
+		armadura.refuerzo(espectroMalefico)
+		assert.equals(19,armadura.puntosLucha(rolando))
 	}
 	test "Eliminar todos los artefactos de Rolando. Incorporar solamente el espejo.Saber cuál es la habilidad para la lucha de Rolando" {
 		rolando.removerArtefacto(espadaDestino)
@@ -57,8 +58,8 @@ fixture{
 	}
 	test "Reemplazar al hechizo preferido por un libro de hechizos que contenga el Hechizo de Logos (con nombre “espectro maléfico”) y al hechizo básico.
 Saber cuál es el nivel de hechicería de Rolando." {
-		
-		rolando.cambiarHechizoPreferido(libroDeHechizos)
+		libroDeHechizos.agregarHechizo(espectroMalefico)
+		rolando.hechizoPreferido(libroDeHechizos)
 		assert.equals(56,rolando.nivelDeHechiceria())
 
 	}

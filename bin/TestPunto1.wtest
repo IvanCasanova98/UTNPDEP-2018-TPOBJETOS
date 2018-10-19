@@ -10,11 +10,11 @@ const rolando = new Personaje(hechizoPreferido= espectroMalefico)
 		assert.equals(56,rolando.nivelDeHechiceria())
 	}
 	test "cambiar el nombre del espectro maléfico a espectro superrecontramalefico muajajaja Conocer el nivel de hechicería de Rolando" {
-		espectroMalefico.cambiarNombre("espectro superrecontramalefico muajajaja")
+		espectroMalefico.nombre("espectro superrecontramalefico muajajaja")
   		assert.equals(125,rolando.nivelDeHechiceria())
 	}
 	test "cambiar el hechizo preferido de Rolando para que sea el hechizo básico.Conocer el nivel de hechicería de Rolando." {
-		rolando.cambiarHechizoPreferido(hechizoBasico)
+		rolando.hechizoPreferido(hechizoBasico)
  		assert.equals(35,rolando.nivelDeHechiceria())
 	}
 	test "hacer que ocurra un eclipse. Conocer el nivel de hechicería de Rolando." {
@@ -25,7 +25,7 @@ const rolando = new Personaje(hechizoPreferido= espectroMalefico)
 		assert.that(espectroMalefico.hechizoPoderoso())
 	}
 	test "cambiar el nombre del espectro maléfico a pepe Saber si el espectro maléfico es poderoso." {
-		espectroMalefico.cambiarNombre("pepe")
+		espectroMalefico.nombre("pepe")
  		assert.notThat(espectroMalefico.hechizoPoderoso())
 	}
 	test "saber si el hechizo básico es poderoso." {
