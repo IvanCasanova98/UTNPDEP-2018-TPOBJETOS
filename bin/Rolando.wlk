@@ -1,4 +1,5 @@
-class UserException inherits Exception { }
+class FaltanMonedas inherits Exception { }
+class IndiceExcedido inherits Exception { }
 
 class Personaje {
 	var property monedas = 100
@@ -8,7 +9,7 @@ class Personaje {
     const valorBase = 3
 
 	method validarMonedasSuficientes(precio){
-		if(precio>monedas) throw new UserException("No tiene suficientes monedas")
+		if(precio>monedas) throw new FaltanMonedas("No tiene suficientes monedas")
 	}
 
 	method comprar(artefacto){
@@ -44,7 +45,7 @@ class Personaje {
     method canjearHechizo(hechizoNuevo){
     	var importe= 0.max(hechizoNuevo.precio(self)-hechizoPreferido.precio(self)/2)
     	if (importe > monedas){
-    		throw new UserException("Monedas insuficientes para canjear ese hechizo")
+    		throw new FaltanMonedas("Monedas insuficientes para canjear ese hechizo")
     	}
     	monedas -= importe
     	hechizoPreferido=hechizoNuevo
@@ -71,7 +72,7 @@ class Arma{
 class Mascara{
 	var indiceOscuridad
 	method establecerIndiceOscuridad(nuevoIndice){
-		if ((nuevoIndice < 0) or (nuevoIndice > 1)){throw new UserException("Se excedió del indice")} 
+		if ((nuevoIndice < 0) or (nuevoIndice > 1)){throw new IndiceExcedido("Se excedió del indice")} 
 		indiceOscuridad = nuevoIndice
 			
 	}
@@ -91,7 +92,7 @@ class Logos{
     method hechizoPoderoso(){
         return (self.poder() > 15)
     }
-    method puntosLucha(_personaje){return self.poder()}
+//    method puntosLucha(_personaje){return self.poder()}
     method valorLucha(_personaje){return self.poder()}
 }
 
@@ -111,7 +112,7 @@ object hechizoBasico{
     method hechizoPoderoso(){
         return false
     }
-    method puntosLucha(_personaje){return self.poder()}
+//    method puntosLucha(_personaje){return self.poder()}
     method valorLucha(_personaje){return self.poder()}
 }
 
@@ -130,7 +131,7 @@ object fuerzaOscura{
 class CotasDeMalla{
    var property puntosLucha
    method valorLucha(personaje){return puntosLucha}
-   method precioRefuerzo(_personaje) = puntosLucha/2
+   method precioRefuerzo(armadura) = puntosLucha/2
 }
 
 object bendicion {
@@ -144,13 +145,13 @@ object ninguno{
 }
 
 object espejo{
-	method listafiltradoEspejo(personaje) = personaje.listaArtefactosSin(self)
+
 	method precio() = 90
     method puntosLucha(personaje){
-        if (personaje.listaArtefactos().all({artefactos=> artefactos==self})){
-            return 0
-        }  else{
-        return self.listafiltradoEspejo(personaje).map({artefactos=>artefactos.puntosLucha(personaje)}).max()
+//        if (personaje.listaArtefactos().all({artefactos=> artefactos==self})){
+        if (personaje.listaArtefactosSin(self).isEmpty()) return 0
+        else{
+        return personaje.listaArtefactosSin(self).max({artefactos=>artefactos.puntosLucha(personaje)}).puntosLucha(personaje)
         		
         }
     }
@@ -159,7 +160,7 @@ object espejo{
 object libroDeHechizos{
 	var listaDeHechizos = [hechizoBasico]
 	method poder(){
-		return listaDeHechizos.filter({hechizos => hechizos.hechizoPoderoso()}).map({hechizos => hechizos.poder()}).sum()
+		return listaDeHechizos.filter({hechizos => hechizos.hechizoPoderoso()}).sum({hechizos => hechizos.poder()})
 	}
    	method agregarHechizo(hechizo){listaDeHechizos.add(hechizo)}
 //    method puntosLucha(_personaje){
