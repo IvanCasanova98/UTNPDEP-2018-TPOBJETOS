@@ -1,0 +1,39 @@
+import Rolando.*
+describe "Punto 2: Lucha" {
+const espectroMalefico =new Logos(nombre="espectro Malefico",valorASerMultiplicado=1)
+const rolando = new Personaje(hechizoPreferido= espectroMalefico)
+const espadaDestino = new Arma()
+const mascaraOscura = new Mascara(indiceOscuridad=1)
+
+fixture{
+	rolando.agregarArtefacto(espadaDestino)
+	rolando.agregarArtefacto(mascaraOscura)
+	rolando.agregarArtefacto(collarDivino)
+}
+	test "Eliminar todos los artefactos de Rolando. Conocer la habilidad para la lucha de Rolando." {
+		rolando.removerArtefacto(espadaDestino)
+		rolando.removerArtefacto(collarDivino)
+		rolando.removerArtefacto(mascaraOscura)
+		assert.equals(1,rolando.habilidadLucha())
+	}
+	test "Conocer la habilidad para la lucha de Rolando con todos los artefactos." {
+		assert.equals(13,rolando.habilidadLucha())
+	}
+	test "Cambiar la cantidad de perlas del collar divino a 3. Conocer la habilidad para la lucha de Rolando con todos los artefactos." {
+		collarDivino.cantPerlas(3)
+		assert.equals(11,rolando.habilidadLucha())
+	}
+	test "Cambiar el valor base para la lucha de Rolando a 8. Conocer la habilidad para la lucha de Rolando con todos los artefactos." {
+		rolando.valorBaseLucha(8)
+		assert.equals(20,rolando.habilidadLucha())
+	}
+	test "Hacer que ocurra un eclipse. Preguntar por el valor de lucha de la máscara oscura." {
+		fuerzaOscura.eclipse()
+		assert.equals(5,mascaraOscura.puntosLucha(rolando))
+	}
+	test "Eliminar la máscara oscura de los artefactos de Rolando. Conocer la habilidad para la lucha de Rolando." {
+		rolando.removerArtefacto(mascaraOscura)
+ 		assert.equals(9,rolando.habilidadLucha())
+	}
+	
+}
