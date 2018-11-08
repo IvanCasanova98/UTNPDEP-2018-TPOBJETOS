@@ -4,14 +4,14 @@ class DemasiadaCarga inherits Exception { }
 class NoEstaArtefacto inherits Exception { }
 
  class Personaje {
-	var capacidadDeCarga
+	var capacidadDeCarga = 10
 	var property monedas = 100
 	var property hechizoPreferido 
     var lstArtefactos = []
     var property valorBaseLucha = 1
     const valorBase = 3
-	var sumaDePesosArtefactos = lstArtefactos.sum({artefactos => artefactos.pesoTotal()})
-	method validarCarga(){if (capacidadDeCarga< sumaDePesosArtefactos) 
+	method sumaDePesosArtefactos () = lstArtefactos.sum({artefactos => artefactos.pesoTotal()})
+	method validarCarga(){if (capacidadDeCarga< self.sumaDePesosArtefactos()) 
 		throw new DemasiadaCarga("Este personaje no puede llevar mas artefactos")
 	}
 	
@@ -46,8 +46,8 @@ class NoEstaArtefacto inherits Exception { }
     method comprar(artefacto,comercio){
     	
     	comercio.verificarSiEsta(artefacto)
-		self.validarMonedasSuficientes(artefacto.precio(self)+ comercio.iva(artefacto))
-		monedas -=artefacto.precio(self) + comercio.iva(artefacto)
+		self.validarMonedasSuficientes(artefacto.precio()+ comercio.iva(artefacto))
+		monedas -=(artefacto.precio() + comercio.iva(artefacto))
 		self.agregarArtefacto(artefacto)
 		comercio.removerArtefacto(artefacto)
 	}
@@ -66,7 +66,7 @@ class NoEstaArtefacto inherits Exception { }
  class Artefacto{
 	var property peso
 	var property diasDeUso
-	method desgaste()= diasDeUso/1000
+	method desgaste()= return if (diasDeUso/1000 > 1 ) 1 else diasDeUso/1000 
 	method pesoTotal()= peso - self.desgaste()
 }
 
@@ -90,14 +90,15 @@ class NoEstaArtefacto inherits Exception { }
 
 
  class Mascara inherits Artefacto{
+ 	var poderMinimo
  	var indiceOscuridad
 	method establecerIndiceOscuridad(nuevoIndice){
 		if ((nuevoIndice < 0) or (nuevoIndice > 1)){throw new IndiceExcedido("Se excedió del indice")} 
 		indiceOscuridad = nuevoIndice
 		}
-	method calcularFuerza () {return 4.max((fuerzaOscura.valorFuerzaOscura()/2)*indiceOscuridad)}
+	method calcularFuerza () {return poderMinimo.max((fuerzaOscura.valorFuerzaOscura()/2)*indiceOscuridad)}
 	method puntosLucha(_personaje){return self.calcularFuerza()}
-	method pesoExtra(){ if ((self.calcularFuerza() - 3) > 3) return self.calcularFuerza() - 3 else return 0}
+	method pesoExtra(){ if (self.calcularFuerza()  > 3) return self.calcularFuerza() - 3 else return 0}
 	override method pesoTotal(){return super() + self.pesoExtra()}
 	method precio(){
 		return 10*indiceOscuridad
@@ -144,8 +145,8 @@ class NoEstaArtefacto inherits Exception { }
     var property cantPerlas= 5
     method precio() = 2*cantPerlas
     method puntosLucha(personaje){return cantPerlas}
-    method pesoExtra() = cantPerlas*0.5
-    override method pesoTotal() {return super()+ self.pesoExtra()}
+    override method pesoTotal() = cantPerlas*0.5
+
 }
 
 
@@ -160,11 +161,9 @@ class NoEstaArtefacto inherits Exception { }
         }
         
         
- class Refuerzo{
-	method precioRefuerzo (armadura)= armadura.valorBase()
-        }
+
         
-        class CotasDeMalla{
+   class CotasDeMalla{
    const peso = 1
    var property puntosLucha
    method valorLucha(personaje){return puntosLucha}
@@ -193,51 +192,66 @@ class NoEstaArtefacto inherits Exception { }
    	method agregarHechizo(hechizo){listaDeHechizos.add(hechizo)}
  	method precio() = 10* listaDeHechizos.size()+ self.poder()
  }
+  
+ class NPC inherits Personaje{
+ 	var property dificultad 
+ 	override method habilidadLucha() = super()*dificultad.multiplicador()
+ 	
+ }
  
- class NPC_Facil inherits Personaje{
+object facil inherits Personaje{
+	method multiplicador()= 1
 	}
 	
-class NPC_Moderado inherits Personaje{
-	override method habilidadLucha() = super()*2
+object moderado inherits Personaje{
+	method multiplicador()= 2
 	}
 	
-class NPC_Dificil inherits Personaje{
-	override method habilidadLucha() = super()*4
+object dificil inherits Personaje{
+	method multiplicador()= 4
 	}
 	
 	
-class Comercio{
+class Comerciante{
 	var lstArtefactos = []
-	var minimoNoImponible=100
 	var situacionImpositiva 
-	var iVA = 0.21
 	method removerArtefacto(artefacto) = lstArtefactos.remove(artefacto)
-	method verificarSiEsta(artefacto) {if(lstArtefactos.filter({x => x == artefacto}).isEmpty()) throw new NoEstaArtefacto("El comercio no posee ese artefacto")} 
+	method verificarSiEsta(artefacto) {if(lstArtefactos.filter({x => x == artefacto}).isEmpty()) throw new NoEstaArtefacto("El comercio no posee ese artefacto")}
+	method iva(artefacto){return situacionImpositiva.ivaSituacion(artefacto)} 
+	
+	method cambiarSituacionImpositiva() {
+		situacionImpositiva = situacionImpositiva.cambiar()
+	}
+		
 }
 
-class ComercianteIndependiente inherits Comercio{
+class Independiente{
+	var ivaActual = 0.21
 	var comision
-	method iva(artefacto){return comision}
-	method cambiarSituacionImpositiva(){
-		if (comision < comision* iVA *2){situacionImpositiva = new ComercianteRegistrado()}
-		else {comision = comision*2}
+	method ivaSituacion(artefacto){return artefacto.precio()*comision}
+	method cambiar(){
+		if (comision*2 > ivaActual){return new Registrado()}
+		else {return new Independiente(comision=comision*2)}
 	}
 }
 
-class ComercianteRegistrado inherits Comercio{
-	method iva(artefacto){return artefacto.precio() * iVA} 
-	method cambiarSituacionImpositiva() {
-		situacionImpositiva = new ComercianteImpuestoGanancias()
+class Registrado {
+	var ivaActual = 0.21
+	method ivaSituacion(artefacto){return artefacto.precio() * ivaActual} 
+	method cambiar() {
+		return new ImpuestoGanancias()
 	}
 	
 }
 
-class ComercianteImpuestoGanancias inherits Comercio{
-	method iva(artefacto){
+class ImpuestoGanancias {
+	var minimoNoImponible=5
+	var recargo = 0.35
+	method ivaSituacion(artefacto){
 		if (artefacto.precio() < minimoNoImponible) return 0
-		else {return (artefacto.precio() - minimoNoImponible)*0.35}
+		else {return (artefacto.precio() - minimoNoImponible)*recargo}
 	}
-	method cambiarSituacionImpositiva(){}
+	method cambiar(){return new ImpuestoGanancias()}
 	
 }
 	

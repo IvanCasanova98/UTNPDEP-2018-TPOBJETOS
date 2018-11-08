@@ -1,39 +1,65 @@
 import Rolando.*
-describe "Punto 2: Lucha" {
+describe "Punto 2: Pesos de los artefactos" {
 const espectroMalefico =new Logos(nombre="espectro Malefico",valorASerMultiplicado=1)
-const rolando = new Personaje(hechizoPreferido= espectroMalefico)
-const espadaDestino = new Arma()
-const mascaraOscura = new Mascara(indiceOscuridad=1)
+const espadaVieja = new Arma(peso=7,diasDeUso=3000)
+const espadaNueva = new Arma(peso=4,diasDeUso=0)
+const espadaComun = new Arma(peso=5,diasDeUso=50)
+const mascaraOscura = new Mascara(peso=3,indiceOscuridad=1,poderMinimo=1,diasDeUso=0)
+const mascaraClara = new Mascara(peso=2,indiceOscuridad=0,poderMinimo=0,diasDeUso=0)
+const cotaDeMalla = new CotasDeMalla(puntosLucha=1)
+const armaduraCota = new Armadura(peso=10,diasDeUso=0,valorBase=1,refuerzo=cotaDeMalla)
+const armaduraReforzadaPar = new Armadura(peso=12,diasDeUso=0,valorBase=1,refuerzo=hechizoComercial)
+const armaduraReforzadaImpar = new Armadura(peso=12,diasDeUso=0,valorBase=1,refuerzo=espectroMalefico)
+const armaduraSinReforzada = new Armadura(peso=12,diasDeUso=0,valorBase=1)
+const merlin = new Personaje(hechizoPreferido= espectroMalefico)
+const ursula = new Personaje(hechizoPreferido= espectroMalefico,capacidadDeCarga=200,lstArtefactos = [mascaraOscura,armaduraCota])
+const mockHnos = new Comerciante(situacionImpositiva=new Registrado(),lstArtefactos = [mascaraOscura, mascaraClara])
 
-fixture{
-	rolando.agregarArtefacto(espadaDestino)
-	rolando.agregarArtefacto(mascaraOscura)
-	rolando.agregarArtefacto(collarDivino)
-}
-	test "Eliminar todos los artefactos de Rolando. Conocer la habilidad para la lucha de Rolando." {
-		rolando.removerArtefacto(espadaDestino)
-		rolando.removerArtefacto(collarDivino)
-		rolando.removerArtefacto(mascaraOscura)
-		assert.equals(1,rolando.habilidadLucha())
+
+	test "Saber el peso de la espada vieja" {
+		assert.equals(6,espadaVieja.pesoTotal())
 	}
-	test "Conocer la habilidad para la lucha de Rolando con todos los artefactos." {
-		assert.equals(13,rolando.habilidadLucha())
+	test "Saber el peso de la espada nueva" {
+		assert.equals(4,espadaNueva.pesoTotal())
 	}
-	test "Cambiar la cantidad de perlas del collar divino a 3. Conocer la habilidad para la lucha de Rolando con todos los artefactos." {
-		collarDivino.cantPerlas(3)
-		assert.equals(11,rolando.habilidadLucha())
+	test "Saber el peso de la espada comun" {
+		assert.equals(4.95,espadaComun.pesoTotal())
 	}
-	test "Cambiar el valor base para la lucha de Rolando a 8. Conocer la habilidad para la lucha de Rolando con todos los artefactos." {
-		rolando.valorBaseLucha(8)
-		assert.equals(20,rolando.habilidadLucha())
+	test "Saber el peso del collar Divino" {
+		assert.equals(2.5,collarDivino.pesoTotal())
 	}
-	test "Hacer que ocurra un eclipse. Preguntar por el valor de lucha de la máscara oscura." {
+	test "Saber el peso de la mascara oscura" {
+		assert.equals(3,mascaraOscura.pesoTotal())
+	}
+	test "Hacer que ocurra un eclipse.Saber el peso de la mascara oscura" {
 		fuerzaOscura.eclipse()
-		assert.equals(5,mascaraOscura.puntosLucha(rolando))
+		assert.equals(5,mascaraOscura.pesoTotal())
 	}
-	test "Eliminar la máscara oscura de los artefactos de Rolando. Conocer la habilidad para la lucha de Rolando." {
-		rolando.removerArtefacto(mascaraOscura)
- 		assert.equals(9,rolando.habilidadLucha())
+	test "Saber el peso de la mascara clara" {
+		assert.equals(2,mascaraClara.pesoTotal())
 	}
+	test "Saber el peso de la armadura con cota de malla" {
+		assert.equals(11,armaduraCota.pesoTotal())
+	}
+	test "Saber el peso de la armadura con hechizo par" {
+		assert.equals(14,armaduraReforzadaPar.pesoTotal())
+	}
+	test "Saber el peso de la armadura con hechizo impar" {
+		assert.equals(13,armaduraReforzadaImpar.pesoTotal())
+	}
+	test "Saber el peso de la armadura sin refuerzo" {
+		assert.equals(12,armaduraSinReforzada.pesoTotal())
+	}
+	test "Merlín le compra a Mock Hnos. la máscara clara y la oscura (sin que haya eclipse). Saber cuál es el peso total que carga Merlin." {
+		merlin.comprar(mascaraOscura,mockHnos)
+		merlin.comprar(mascaraClara,mockHnos)
+		assert.equals(5,merlin.sumaDePesosArtefactos())
+	}
+	test "Ursula carga con 14 kilos iniciales (11 de la armadura con cota de malla y 3 de la máscara oscura). Decide desprenderse de la armadura con cota de malla. Saber cuál es el peso total con el que carga Ursula ahora." {
+		ursula.removerArtefacto(armaduraCota)
+		assert.equals(3,ursula.sumaDePesosArtefactos())
+	}
+	
+	
 	
 }
